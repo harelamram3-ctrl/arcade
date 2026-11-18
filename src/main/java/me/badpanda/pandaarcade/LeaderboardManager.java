@@ -37,12 +37,6 @@ public class LeaderboardManager {
         }
     }
 
-    public void addWin(String gameId, String playerName) {
-        int currentWins = config.getInt(gameId + "." + playerName, 0);
-        config.set(gameId + "." + playerName, currentWins + 1);
-        save();
-    }
-
     public int getHighScore(String gameId, String playerName) {
         return config.getInt(gameId + "." + playerName, 0);
     }

@@ -17,8 +17,6 @@ public class SpaceShooterGame extends ArcadeGame {
     private int shipCol = 4;
     private final List<Integer> lasers = new ArrayList<>();
     private final List<Integer> enemies = new ArrayList<>();
-    private final List<Integer> powerups = new ArrayList<>();
-    private int doubleLaserTicks = 0;
     private final Random random = new Random();
     private int tickCount = 0;
 
@@ -36,7 +34,6 @@ public class SpaceShooterGame extends ArcadeGame {
     private void tick() {
         if (isOver) return;
         tickCount++;
-        if (doubleLaserTicks > 0) doubleLaserTicks--;
 
         List<Integer> nextLasers = new ArrayList<>();
         for (int pos : lasers) {
@@ -44,7 +41,7 @@ public class SpaceShooterGame extends ArcadeGame {
             if (next >= 0) {
                 if (enemies.contains(next)) {
                     enemies.remove((Integer) next);
-                    score += 15;
+                    score += 10;
                     player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.8f, 1.5f);
                 } else {
                     nextLasers.add(next);
@@ -53,21 +50,6 @@ public class SpaceShooterGame extends ArcadeGame {
         }
         lasers.clear();
         lasers.addAll(nextLasers);
-
-        // הזזת שדרוגים למטה
-        List<Integer> nextPower = new ArrayList<>();
-        for (int pos : powerups) {
-            int next = pos + 9;
-            if (next == 36 + shipCol) {
-                doubleLaserTicks = 40;
-                score += 30;
-                player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 0.9f, 1.8f);
-            } else if (next < 45) {
-                nextPower.add(next);
-            }
-        }
-        powerups.clear();
-        powerups.addAll(nextPower);
 
         if (tickCount % 3 == 0) {
             List<Integer> nextEnemies = new ArrayList<>();
@@ -79,7 +61,7 @@ public class SpaceShooterGame extends ArcadeGame {
                 }
                 if (lasers.contains(next)) {
                     lasers.remove((Integer) next);
-                    score += 15;
+                    score += 10;
                     player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.8f, 1.5f);
                 } else {
                     nextEnemies.add(next);
@@ -90,9 +72,6 @@ public class SpaceShooterGame extends ArcadeGame {
 
             if (random.nextInt(100) < 65) {
                 enemies.add(random.nextInt(9));
-            }
-            if (random.nextInt(100) < 12) {
-                powerups.add(random.nextInt(9));
             }
         }
 
@@ -114,32 +93,22 @@ public class SpaceShooterGame extends ArcadeGame {
             shipCol++;
             player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.5f, 1.5f);
         } else if (slot == 49) {
-            fireAt(27 + shipCol);
-            if (doubleLaserTicks > 0) {
-                if (shipCol > 0) fireAt(27 + shipCol - 1);
-                if (shipCol < 8) fireAt(27 + shipCol + 1);
+            int laserStart = 27 + shipCol;
+            if (enemies.contains(laserStart)) {
+                enemies.remove((Integer) laserStart);
+                score += 10;
+                player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.8f, 1.5f);
+            } else {
+                lasers.add(laserStart);
+                player.playSound(player.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_LAUNCH, 0.5f, 2.0f);
             }
-            player.playSound(player.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_LAUNCH, 0.5f, 2.0f);
         }
         render();
-    }
-
-    private void fireAt(int pos) {
-        if (enemies.contains(pos)) {
-            enemies.remove((Integer) pos);
-            score += 15;
-            player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.8f, 1.5f);
-        } else {
-            lasers.add(pos);
-        }
     }
 
     private void render() {
         for (int i = 0; i < 45; i++) {
             inventory.setItem(i, ArcadeGUI.createItem(Material.BLACK_STAINED_GLASS_PANE, " ", List.of()));
-        }
-        for (int p : powerups) {
-            inventory.setItem(p, ArcadeGUI.createItem(Material.NETHER_STAR, "§b§l⚡ שדרוג ירי משולש!", List.of()));
         }
         for (int enemy : enemies) {
             inventory.setItem(enemy, ArcadeGUI.createItem(Material.TNT, "§c§lחללית אויב", List.of()));
@@ -147,10 +116,7 @@ public class SpaceShooterGame extends ArcadeGame {
         for (int laser : lasers) {
             inventory.setItem(laser, ArcadeGUI.createItem(Material.END_ROD, "§b§lלייזר", List.of()));
         }
-        inventory.setItem(36 + shipCol, ArcadeGUI.createItem(
-                doubleLaserTicks > 0 ? Material.DIAMOND_BLOCK : Material.BEACON,
-                "§a§lהחללית שלך §7(ניקוד: " + score + ")",
-                List.of(doubleLaserTicks > 0 ? "§bירי משולש פעיל!" : "§7אסוף כוכבים לשדרוג!")));
+        inventory.setItem(36 + shipCol, ArcadeGUI.createItem(Material.BEACON, "§a§lהחללית שלך §7(ניקוד: " + score + ")", List.of()));
 
         for (int i = 45; i < 54; i++) {
             inventory.setItem(i, ArcadeGUI.createItem(Material.GRAY_STAINED_GLASS_PANE, " ", List.of()));

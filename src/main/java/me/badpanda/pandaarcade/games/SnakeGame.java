@@ -17,7 +17,6 @@ public class SnakeGame extends ArcadeGame {
     private final LinkedList<Integer> snake = new LinkedList<>();
     private int direction = 1;
     private int applePos;
-    private boolean goldenApple = false;
     private final Random random = new Random();
 
     public SnakeGame(Player player) {
@@ -38,7 +37,6 @@ public class SnakeGame extends ArcadeGame {
         do {
             applePos = random.nextInt(45);
         } while (snake.contains(applePos));
-        goldenApple = random.nextInt(100) < 25;
     }
 
     private void tick() {
@@ -57,8 +55,8 @@ public class SnakeGame extends ArcadeGame {
 
         snake.addFirst(next);
         if (next == applePos) {
-            score += goldenApple ? 45 : 15;
-            player.playSound(player.getLocation(), goldenApple ? Sound.ENTITY_PLAYER_LEVELUP : Sound.ENTITY_GENERIC_EAT, 1f, 1.4f);
+            score += 15;
+            player.playSound(player.getLocation(), Sound.ENTITY_GENERIC_EAT, 1f, 1.3f);
             spawnApple();
         } else {
             snake.removeLast();
@@ -80,11 +78,7 @@ public class SnakeGame extends ArcadeGame {
             inventory.setItem(i, ArcadeGUI.createItem(Material.BLACK_STAINED_GLASS_PANE, " ", List.of()));
         }
 
-        if (goldenApple) {
-            inventory.setItem(applePos, ArcadeGUI.createItem(Material.GOLDEN_APPLE, "§6§l✨ תפוח זהב (+45)", List.of()));
-        } else {
-            inventory.setItem(applePos, ArcadeGUI.createItem(Material.APPLE, "§c§lתפוח (+15)", List.of()));
-        }
+        inventory.setItem(applePos, ArcadeGUI.createItem(Material.APPLE, "§c§lתפוח (+15)", List.of()));
 
         for (int i = 0; i < snake.size(); i++) {
             int pos = snake.get(i);
