@@ -1,8 +1,0 @@
-name: PandaArcade
-version: 2.0
-main: me.badpanda.pandaarcade.PandaArcade
-api-version: '1.21'
-commands:
-  arcade:
-    description: פותח את תפריט מכונות הארקייד
-    aliases: [games, arc]
