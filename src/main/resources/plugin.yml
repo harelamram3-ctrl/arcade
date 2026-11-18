@@ -1,0 +1,14 @@
+name: Arcade
+version: '${project.version}'
+main: il.arcade.ArcadePlugin
+api-version: '1.21'
+description: Mini-game arcade inside GUIs
+commands:
+  arcade:
+    description: Open the arcade
+    usage: /arcade [top <whack|memory|reaction>]
+    permission: arcade.play
+permissions:
+  arcade.play:
+    description: Play in the arcade
+    default: true
