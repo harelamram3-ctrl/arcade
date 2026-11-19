@@ -1,0 +1,13 @@
+name: PandaArcade
+version: 4.1
+main: me.badpanda.pandaarcade.PandaArcade
+api-version: '1.21'
+softdepend: [Multiverse-Core]
+commands:
+  arcade:
+    description: פותח את תפריט הארקייד, משגר לעולם MV ומנהל מכונות בריאר
+    aliases: [games, arc]
+permissions:
+  pandaarcade.admin:
+    description: הרשאה ליצור, לשנות ולשבור בלוקי בריאר של משחקים, לבנות מפות ולהגדיר עולם MV
+    default: op
