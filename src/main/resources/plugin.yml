@@ -1,0 +1,13 @@
+name: PandaArcade
+version: 4.0
+main: me.badpanda.pandaarcade.PandaArcade
+api-version: '1.21'
+softdepend: [Multiverse-Core]
+commands:
+  arcade:
+    description: פותח את תפריט הארקייד, משגר לעולם MV ומנהל מכונות
+    aliases: [games, arc]
+permissions:
+  pandaarcade.admin:
+    description: הרשאה להגדיר עולם ארקייד, ספאון, מפות ומכונות בריאר
+    default: op
